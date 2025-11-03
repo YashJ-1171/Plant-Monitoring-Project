@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Monitor - Home</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #f5f5f5;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: #666;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-item.active {
+            color: #333;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #56ab2f;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .search-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar input {
+            padding: 12px 20px;
+            padding-right: 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            width: 300px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #56ab2f;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .notification-icon, .profile-icon {
+            width: 40px;
+            height: 40px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .notification-icon:hover, .profile-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .profile-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+        }
+
+        .left-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .plant-header h1 {
+            font-size: 42px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .plant-description {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+
+        .plant-display {
+            position: relative;
+            background: url('https://i.pinimg.com/736x/b3/ba/e4/b3bae458df0601e73b8ac1042cad8e97.jpg');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 20px;
+            padding: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+            background-color: #f0f0f0;
+        }
+
+        .plant-image {
+            position: relative;
+            z-index: 2;
+        }
+
+        .plant-pot {
+            width: 200px;
+            height: 280px;
+            background: linear-gradient(180deg, #f5f5f5 0%, #e0e0e0 100%);
+            border-radius: 0 0 100px 100px / 0 0 30px 30px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .plant-leaves {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 200px;
+        }
+
+        .leaf {
+            position: absolute;
+            width: 80px;
+            height: 120px;
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+            border-radius: 50% 0%;
+            transform-origin: bottom center;
+        }
+
+        .leaf:nth-child(1) {
+            left: 50%;
+            transform: translateX(-50%) rotate(-10deg);
+        }
+
+        .leaf:nth-child(2) {
+            left: 30%;
+            transform: translateX(-50%) rotate(-35deg);
+        }
+
+        .leaf:nth-child(3) {
+            left: 70%;
+            transform: translateX(-50%) rotate(35deg);
+        }
+
+        .metric-badge {
+            position: absolute;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            z-index: 3;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .temp-badge {
+            top: 80px;
+            left: 60px;
+        }
+
+        .humidity-badge {
+            top: 250px;
+            right: 60px;
+        }
+
+        .sunlight-badge {
+            bottom: 100px;
+            left: 60px;
+        }
+
+        .right-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .growth-card {
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            border-radius: 20px;
+            padding: 25px;
+            color: #333;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .dropdown {
+            background: rgba(255,255,255,0.5);
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .card-subtitle {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .growth-chart {
+            height: 120px;
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .chart-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+        }
+
+        .growth-badge {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .details-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+        }
+
+        .details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .details-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .expand-icon {
+            color: #999;
+            cursor: pointer;
+        }
+
+        .details-subtitle {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 20px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .detail-info h4 {
+            font-size: 13px;
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .detail-info p {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .audio-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 25px;
+            color: white;
+        }
+
+        .audio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .play-button {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .play-button:hover {
+            transform: scale(1.1);
+        }
+
+        .waveform {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            margin: 20px 0;
+        }
+
+        .wave-bar {
+            flex: 1;
+            background: rgba(255,255,255,0.4);
+            border-radius: 2px;
+            animation: wave 1.5s ease-in-out infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% { height: 20%; }
+            50% { height: 100%; }
+        }
+
+        .audio-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-section">
+                <div class="logo">P</div>
+                <nav class="nav">
+                    <a href="friends.html" class="nav-item">Friend Activity</a>
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        <span class="nav-item active">My Plant</span>
+                    </div>
+                </nav>
+            </div>
+            <div class="search-section">
+                <div class="notification-icon">🔔</div>
+                <div class="profile-icon">JD</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="left-section">
+                <div class="plant-header">
+                    <h1>Plant Monitoring System</h1>
+                    <p class="plant-description">Your go-to app to check on your plants health!</p>
+                </div>
+
+                <div class="plant-display">
+                    <div class="metric-badge temp-badge">
+                        <div class="metric-label">Temperature</div>
+                        <div class="metric-value">24.5°C</div>
+                    </div>
+                    
+                    <div class="metric-badge humidity-badge">
+                        <div class="metric-label">Humidity</div>
+                        <div class="metric-value">65%</div>
+                    </div>
+                    
+                    <div class="metric-badge sunlight-badge">
+                        <div class="metric-label">Sunlight</div>
+                        <div class="metric-value">Moderate</div>
+                    </div>
+
+                    <div class="plant-image" style="display: none;">
+                        <div class="plant-leaves">
+                            <div class="leaf"></div>
+                            <div class="leaf"></div>
+                            <div class="leaf"></div>
+                        </div>
+                        <div class="plant-pot"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-section">
+                <div class="growth-card">
+                    <div class="card-header">
+                        <div class="card-title">Plant Log</div>
+                        <select class="dropdown">
+                            <option>Week</option>
+                            <option>Month</option>
+                            <option>Year</option>
+                        </select>
+                    </div>
+                    <div class="card-subtitle">Watering Schedule & History</div>
+                    
+                    <div style="margin-top: 20px;">
+                        <div style="background: rgba(255,255,255,0.5); border-radius: 15px; padding: 20px; margin-bottom: 15px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <div style="font-weight: 600; font-size: 16px;">Last Watered</div>
+                                <div style="background: rgba(0,0,0,0.8); color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px;">
+                                    2 days ago
+                                </div>
+                            </div>
+                            <div style="font-size: 13px; opacity: 0.8;">October 13, 2025 • 8:30 AM</div>
+                            <div style="margin-top: 10px; font-size: 13px; opacity: 0.8;">💧 Amount: 250ml</div>
+                        </div>
+
+                        <div style="background: rgba(255,255,255,0.3); border-radius: 15px; padding: 15px; margin-bottom: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="font-size: 14px; font-weight: 500;">Next Watering</div>
+                                <div style="font-size: 13px; opacity: 0.8;">In 2 days</div>
+                            </div>
+                            <div style="font-size: 12px; opacity: 0.7; margin-top: 5px;">October 17, 2025</div>
+                        </div>
+
+                        <div style="background: rgba(255,255,255,0.3); border-radius: 15px; padding: 15px;">
+                            <div style="font-size: 14px; font-weight: 500; margin-bottom: 10px;">Recent Activity</div>
+                            <div style="font-size: 12px; opacity: 0.8; margin-bottom: 5px;">• Watered - Oct 13</div>
+                            <div style="font-size: 12px; opacity: 0.8; margin-bottom: 5px;">• Fertilized - Oct 10</div>
+                            <div style="font-size: 12px; opacity: 0.8;">• Watered - Oct 9</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="details-card">
+                    <div class="details-header">
+                        <div class="details-title">Plant Details</div>
+                        <span class="expand-icon">↗</span>
+                    </div>
+                    <div class="details-subtitle">Real-time conditions.</div>
+                    
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <div class="detail-icon" style="background: #fff5e6;">☀️</div>
+                            <div class="detail-info">
+                                <h4>Light Condition</h4>
+                                <p>Moderate</p>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-icon" style="background: #e8f5e9;">🌱</div>
+                            <div class="detail-info">
+                                <h4>Soil Health</h4>
+                                <p>Optimal</p>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-icon" style="background: #e3f2fd;">💧</div>
+                            <div class="detail-info">
+                                <h4>Humidity Level</h4>
+                                <p>65%</p>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-icon" style="background: #f3e5f5;">🌿</div>
+                            <div class="detail-info">
+                                <h4>Fertilization Status</h4>
+                                <p>Balanced</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="audio-card">
+    <div class="audio-header">
+        <div>
+            <div class="card-title">Plants Monitored</div>
+            <div class="card-subtitle" style="margin-top: 5px;">Guides and best practices.</div>
+        </div>
+        <div class="play-button" onclick="toggleAudio()">▶</div>
+    </div>
+    
+    <audio id="plantAudio" style="display: none;">
+        <source src="plant-guide.mp3" type="audio/mpeg">
+        <source src="plant-guide.wav" type="audio/wav">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <div style="margin: 20px 0;">
+        <div id="progressContainer" style="width: 100%; height: 8px; background: rgba(255,255,255,0.3); border-radius: 10px; cursor: pointer; position: relative;">
+            <div id="progressBar" style="width: 0%; height: 100%; background: white; border-radius: 10px; transition: width 0.1s;"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px;">
+            <span id="currentTime">00:00</span>
+            <span id="audioDuration">00:00</span>
+        </div>
+    </div>
+    
+    <div class="audio-footer">
+        <span style="cursor: pointer;" onclick="changeSpeed()">Speed: <span id="speedDisplay">1x</span></span>
+    </div>
+</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const audio = document.getElementById('plantAudio');
+    const playButton = document.querySelector('.play-button');
+    const durationDisplay = document.getElementById('audioDuration');
+    const currentTimeDisplay = document.getElementById('currentTime');
+    const progressBar = document.getElementById('progressBar');
+    const progressContainer = document.getElementById('progressContainer');
+    const speedDisplay = document.getElementById('speedDisplay');
+    let currentSpeed = 1;
+
+    function toggleAudio() {
+        console.log('Button clicked');
+        
+        if (audio.paused) {
+            audio.play()
+                .then(() => {
+                    console.log('Audio playing');
+                    playButton.innerHTML = '⏸';
+                })
+                .catch((error) => {
+                    console.error('Error playing audio:', error);
+                    alert('Cannot play audio. Check if the file exists: plant-guide.mp3');
+                });
+        } else {
+            audio.pause();
+            playButton.innerHTML = '▶';
+        }
+    }
+
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function changeSpeed() {
+        const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
+        const currentIndex = speeds.indexOf(currentSpeed);
+        const nextIndex = (currentIndex + 1) % speeds.length;
+        currentSpeed = speeds[nextIndex];
+        audio.playbackRate = currentSpeed;
+        speedDisplay.textContent = currentSpeed + 'x';
+    }
+
+    // Update duration when audio loads
+    audio.addEventListener('loadedmetadata', function() {
+        durationDisplay.textContent = formatTime(audio.duration);
+        console.log('Audio loaded successfully');
+    });
+
+    // Update progress bar and time as audio plays
+    audio.addEventListener('timeupdate', function() {
+        const progress = (audio.currentTime / audio.duration) * 100;
+        progressBar.style.width = progress + '%';
+        currentTimeDisplay.textContent = formatTime(audio.currentTime);
+    });
+
+    // Click on progress bar to skip
+    progressContainer.addEventListener('click', function(e) {
+        const rect = progressContainer.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const width = rect.width;
+        const percentage = clickX / width;
+        audio.currentTime = percentage * audio.duration;
+    });
+
+    // Reset button when audio ends
+    audio.addEventListener('ended', function() {
+        playButton.innerHTML = '▶';
+        progressBar.style.width = '0%';
+    });
+
+    // Check for errors
+    audio.addEventListener('error', function(e) {
+        console.error('Audio error:', e);
+        alert('Audio file not found! Make sure "plant-guide.mp3" is in the same folder as index.html');
+    });
+
+    const backend = "https://your-vercel-app.vercel.app"; // Replace with your backend
+
+async function fetchSensorData() {
+  const res = await fetch(`${backend}/api/latest`);
+  const data = await res.json();
+  document.querySelector(".temp-badge .metric-value").textContent = data.temperature + "°C";
+  document.querySelector(".humidity-badge .metric-value").textContent = data.humidity + "%";
+  console.log("Live data:", data);
+}
+setInterval(fetchSensorData, 3000);
+fetchSensorData();
+
+async function togglePump(state) {
+  await fetch(`${backend}/api/pump`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ command: state })
+  });
+  alert(`Pump turned ${state}`);
+}
+</script>
+
+
+</body>
+</html>
